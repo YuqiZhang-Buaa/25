@@ -1,11 +1,10 @@
-model_names='max_mil mean_mil att_mil trans_mil s4_mil mamba_mil'
-# model_names='mamba_mil'
-backbones="resnet50 plip"
+model_names='momil'
+# max_mil mean_mil att_mil trans_mil s4_mil 
+backbones="resnet50"
 # backbones='resnet50'
 
 declare -A in_dim
 in_dim["resnet50"]=1024
-in_dim["plip"]=512
 
 declare -A gpus
 gpus["mean_mil"]=0
@@ -15,12 +14,12 @@ gpus["trans_mil"]=0
 gpus['s4model']=0
 gpus['mamba_mil']=0
 
-cancers='BLCA BRCA COADREAD KIRC KIRP LUAD STAD UCEC'
+cancers='LUAD LUSC'
 
 lr='2e-4'
-mambamil_rate='5'
+
 mambamil_layer='2'
-mambamil_type='SRMamba'
+
 
 for cancer in $cancers
     do

@@ -149,7 +149,7 @@ parser.add_argument('--in_dim', type=int, default=1024)
 ## mambamil
 
 parser.add_argument('--mambamil_rate',type=int, default=10, help='mambamil_rate')
-parser.add_argument('--mambamil_layer',type=int, default=2, help='mambamil_layer')
+parser.add_argument('--layer_number',type=int, default=2, help='layer_number')
 parser.add_argument('--mambamil_type',type=str, default='SRMamba', choices= ['Mamba', 'BiMamba', 'SRMamba'], help='mambamil_type')
 
 
@@ -191,27 +191,7 @@ settings = {'num_splits': args.k,
 
 print('\nLoad Dataset')
 
-if args.task == 'LUAD_LUSC':
-    args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = 'dataset_csv/LUAD_LUSC.csv',
-                            data_dir= None,
-                            shuffle = False, 
-                            seed = args.seed, 
-                            print_info = True,
-                            label_dict = {'LUAD':0, 'LUSC':1},
-                            patient_strat=False,
-                            ignore=[])
-elif args.task == 'LUAD_LUSC512pe':
-    args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/data/MambaMIL/dataset_csv/LUAD_LUSC_512_new_with_p.csv',
-                            data_dir= None,
-                            shuffle = False, 
-                            seed = args.seed, 
-                            print_info = True,
-                            label_dict = {'LUAD':0, 'LUSC':1},
-                            patient_strat=False,
-                            ignore=[])
-elif args.task == 'LUAD_LUSC512':
+if args.task == 'LUAD_LUSC512':
     args.n_classes=2
     dataset = Generic_MIL_Dataset(csv_path = '/data/MambaMIL/dataset_csv/LUAD_LUSC_512_new.csv',
                             data_dir= None,
@@ -219,26 +199,6 @@ elif args.task == 'LUAD_LUSC512':
                             seed = args.seed, 
                             print_info = True,
                             label_dict = {'LUAD':0, 'LUSC':1},
-                            patient_strat=False,
-                            ignore=[])
-elif args.task == 'C16':
-    args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/data/MambaMIL/dataset_csv/C16.csv',
-                            data_dir= None,
-                            shuffle = False, 
-                            seed = args.seed, 
-                            print_info = True,
-                            label_dict = {'normal_tissue':0, 'tumor_tissue':1},
-                            patient_strat=False,
-                            ignore=[])
-elif args.task == 'C16512':
-    args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/data/MambaMIL/dataset_csv/C16512.csv',
-                            data_dir= None,
-                            shuffle = False, 
-                            seed = args.seed, 
-                            print_info = True,
-                            label_dict = {'normal_tissue':0, 'tumor_tissue':1},
                             patient_strat=False,
                             ignore=[])
 elif args.task == 'C16512new':
@@ -251,41 +211,9 @@ elif args.task == 'C16512new':
                             label_dict = {'normal_tissue':0, 'tumor_tissue':1},
                             patient_strat=False,
                             ignore=[])
-elif args.task == 'C16512newpe':
-    args.n_classes=2
-    dataset = Generic_MIL_Dataset(csv_path = '/data/MambaMIL/dataset_csv/C16512_new_with_p.csv',
-                            data_dir= None,
-                            shuffle = False, 
-                            seed = args.seed, 
-                            print_info = True,
-                            label_dict = {'normal_tissue':0, 'tumor_tissue':1},
-                            patient_strat=False,
-                            ignore=[])
-elif args.task == 'BRACS':
-    args.n_classes=7
-    dataset = Generic_MIL_Dataset(csv_path = 'dataset_csv/BRACS.csv',
-                            data_dir= None,
-                            shuffle = False, 
-                            seed = args.seed, 
-                            print_info = True,
-                            label_dict = {'PB':0, 'IC':1, 'DCIS':2, 'N':3, 'ADH': 4,
-                                          'FEA':5, 'UDH': 6 },
-                            patient_strat=False,
-                            ignore=[])
 elif args.task == 'BRACS_512':
     args.n_classes=7
     dataset = Generic_MIL_Dataset(csv_path = '/data/MambaMIL/dataset_csv/BRACS_512_updated.csv',
-                            data_dir= None,
-                            shuffle = False, 
-                            seed = args.seed, 
-                            print_info = True,
-                            label_dict = {'PB':0, 'IC':1, 'DCIS':2, 'N':3, 'ADH': 4,
-                                          'FEA':5, 'UDH': 6 },
-                            patient_strat=False,
-                            ignore=[])
-elif args.task == 'BRACS_512pe':
-    args.n_classes=7
-    dataset = Generic_MIL_Dataset(csv_path = '/data/MambaMIL/dataset_csv/BRACS_512_updated_with_p.csv',
                             data_dir= None,
                             shuffle = False, 
                             seed = args.seed, 

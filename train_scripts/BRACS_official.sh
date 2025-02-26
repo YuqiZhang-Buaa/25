@@ -1,13 +1,13 @@
-model_names='max_mil mean_mil att_mil trans_mil s4_mil mamba_mil'
-# model_names='mamba_mil'
+model_names='momil'
+# max_mil mean_mil att_mil trans_mil s4_mil mamba_mil
 # backbones="resnet50 plip"
 backbones='resnet50'
-# backbones='plip'
+
 
 
 declare -A in_dim
 in_dim["resnet50"]=1024
-in_dim["plip"]=512
+
 
 declare -A gpus
 gpus["max_mil"]=0
@@ -22,9 +22,8 @@ results_dir="./experiments/train/"$task
 preloading="no"
 patch_size="512"
 lr='2e-4'
-mambamil_rate='5'
-mambamil_layer='2'
-mambamil_type='SRMamba'
+layer_number='2'
+
 
 for model in $model_names
 do

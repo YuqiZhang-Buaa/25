@@ -26,7 +26,7 @@ patch_size="512"
 
 lr='2e-4'
 mambamil_rate='5'
-mambamil_layer='2'
+layer_number='2'
 mambamil_type='SRMamba'
 
 for model in $model_names

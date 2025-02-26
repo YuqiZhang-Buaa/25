@@ -3,7 +3,7 @@ import torch
 import numpy as np
 import torch.nn as nn
 import pdb
-
+import sys
 import torch
 import numpy as np
 import torch.nn as nn
@@ -15,7 +15,8 @@ import torch.nn.functional as F
 import math
 from itertools import islice
 import collections
-from survival_utils import collate_MIL_survival
+from sklearn.metrics import f1_score
+from .survival_utils import collate_MIL_survival
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class SubsetSequentialSampler(Sampler):
@@ -59,7 +60,7 @@ def get_split_loader(split_dataset, training = False, testing = False, weighted 
 	"""
 		return either the validation loader or training loader 
 	"""
-	kwargs = {'num_workers': 4} if device.type == "cuda" else {}
+	kwargs = {'num_workers': 8, 'pin_memory': True} if device.type == "cuda" else {}
 	if not testing:
 		if training:
 			if weighted:
@@ -151,6 +152,102 @@ def calculate_error(Y_hat, Y):
 
 	return error
 
+def calculate_f1(Y_hat, Y):
+    # 转为浮点型张量
+	# print('Y_hat:', Y_hat)
+	# print('Y:', Y)
+	# sys.exit()
+	Y_hat = Y_hat.astype(float)
+	Y = Y.astype(float)
+	if max(Y)>1 :
+		f1 = f1_score(Y, Y_hat, average='macro')
+		return f1
+	else:
+		f1 = f1_score(Y, Y_hat)
+		return f1
+
+def calculate_sensitivity(Y_hat, Y):
+    # 转为浮点型张量
+    Y_hat = Y_hat.astype(float)
+    Y = Y.astype(float)
+
+    # 计算 True Positives 和 False Negatives
+    TP = (Y_hat * Y).sum()
+    FN = ((1 - Y_hat) * Y).sum()
+
+    # 计算 Sensitivity
+    sensitivity = TP / (TP + FN) if (TP + FN) > 0 else 0.0
+
+    return sensitivity
+
+def calculate_specificity(Y_hat, Y):
+    # 转为浮点型张量
+    Y_hat = Y_hat.astype(float)
+    Y = Y.astype(float)
+
+    # 计算 True Negatives 和 False Positives
+    TN = ((1 - Y_hat) * (1 - Y)).sum()
+    FP = (Y_hat * (1 - Y)).sum()
+
+    # 计算 Specificity
+    specificity = TN / (TN + FP) if (TN + FP) > 0 else 0.0
+
+    return specificity
+
+def calculate_acc(Y_hat, Y):
+    # 确保 Y_hat 和 Y 是 numpy 数组
+    Y_hat = np.array(Y_hat).astype(float)
+    Y = np.array(Y).astype(float)
+    
+    # 计算预测正确的元素数量
+    correct = np.sum(Y_hat == Y)
+    
+    # 计算准确率
+    accuracy = correct / len(Y_hat)
+    
+    return accuracy
+
+def macro_avg_sensitivity_specificity(Y_hat, Y):
+	Y_hat = np.array(Y_hat).astype(float)
+	Y = np.array(Y).astype(float)
+	if max(Y)<=1 :
+		sensitivity, specificity = binary_sensitivity_specificity(Y_hat, Y)
+		return sensitivity, specificity
+	classes = np.unique(np.concatenate((Y, Y_hat)))
+	n_classes = len(classes)
+	sensitivity_list = []
+	specificity_list = []
+
+	for cls in classes:
+		# 构建二分类混淆矩阵
+		tp = np.sum((Y == cls) & (Y_hat == cls))
+		fn = np.sum((Y == cls) & (Y_hat != cls))
+		fp = np.sum((Y != cls) & (Y_hat == cls))
+		tn = np.sum((Y != cls) & (Y_hat != cls))
+
+		# 处理分母为零的情况
+		sensitivity = tp / (tp + fn) if (tp + fn) != 0 else 0.0
+		specificity = tn / (tn + fp) if (tn + fp) != 0 else 0.0
+
+		sensitivity_list.append(sensitivity)
+		specificity_list.append(specificity)
+
+	macro_sensitivity = np.mean(sensitivity_list)
+	macro_specificity = np.mean(specificity_list)
+	return macro_sensitivity, macro_specificity
+
+def binary_sensitivity_specificity(Y_hat, Y):
+    Y_hat = np.array(Y_hat)
+    Y = np.array(Y)
+    TP = np.sum((Y_hat == 1) & (Y == 1))
+    FN = np.sum((Y == 1) & (Y_hat != 1))
+    TN = np.sum((Y == 0) & (Y_hat == 0))
+    FP = np.sum((Y == 0) & (Y_hat != 0))
+    
+    sensitivity = TP / (TP + FN) if (TP + FN) > 0 else 0
+    specificity = TN / (TN + FP) if (TN + FP) > 0 else 0
+    return sensitivity, specificity
+	
 def make_weights_for_balanced_classes_split(dataset):
 	N = float(len(dataset))                                           
 	weight_per_class = [N/len(dataset.slide_cls_ids[c]) for c in range(len(dataset.slide_cls_ids))]                                                                                                     

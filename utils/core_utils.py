@@ -7,10 +7,12 @@ from sklearn.preprocessing import label_binarize
 from sklearn.metrics import roc_auc_score, roc_curve
 from sklearn.metrics import auc as calc_auc
 import wandb
+import sys
 
 def find_func(model_name: str):
     model_name = model_name.lower()
-    if model_name in ['mean_mil', 'max_mil', 'att_mil','trans_mil', 's4model','mamba_mil']:
+    # print(model_name)
+    if model_name in ['mean_mil', 'max_mil', 'att_mil','trans_mil', 's4model','mamba_mil', 'momil', 'rrt', 'clam_sb']:
 
         return train_loop, validate
     else:
@@ -70,7 +72,7 @@ class EarlyStopping:
         self.counter = 0
         self.best_score = None
         self.early_stop = False
-        self.val_loss_min = np.Inf
+        self.val_loss_min = np.inf
 
     def __call__(self, epoch, val_loss, model, ckpt_name = 'checkpoint.pt'):
 
@@ -113,6 +115,7 @@ def train(datasets, cur, args):
 
     print('\nInit train/val/test splits...', end=' ')
     train_split, val_split, test_split = datasets
+   
     save_splits(datasets, ['train', 'val', 'test'], os.path.join(args.results_dir, 'splits_{}.csv'.format(cur)))
     print('Done!')
     print("Training on {} samples".format(len(train_split)))
@@ -139,12 +142,24 @@ def train(datasets, cur, args):
     elif args.model_type == 'trans_mil':
         from models.TransMIL import TransMIL
         model = TransMIL(args.in_dim, args.n_classes, dropout=args.drop_out, act='relu')
+    elif args.model_type == 'trans_mil_re':
+        from models.TransMIL_re import TransMIL
+        model = TransMIL(args.in_dim, args.n_classes, dropout=args.drop_out, act='relu')
     elif args.model_type == 's4model':
         from models.S4MIL import S4Model
         model = S4Model(in_dim = args.in_dim, n_classes = args.n_classes, act = 'gelu', dropout = args.drop_out)
     elif args.model_type == 'mamba_mil':
         from models.MambaMIL import MambaMIL
-        model = MambaMIL(in_dim = args.in_dim, n_classes=args.n_classes, dropout=args.drop_out, act='gelu', layer = args.mambamil_layer, rate = args.mambamil_rate, type = args.mambamil_type)
+        model = MambaMIL(in_dim = args.in_dim, n_classes=args.n_classes, dropout=args.drop_out, act='gelu', layer = args.layer_number, rate = args.mambamil_rate, type = args.mambamil_type)
+    elif args.model_type == 'rrt':
+        from models.rrt import RRTMIL
+        model = RRTMIL(input_dim = args.in_dim, n_classes = args.n_classes, dropout=args.drop_out, act='relu')
+    elif args.model_type == 'clam_sb':
+        from models.clam import CLAM_SB
+        model = CLAM_SB(input_dim = args.in_dim, n_classes = args.n_classes, dropout=args.drop_out, act='relu')
+    elif args.model_type == 'momil':
+        from models.MoMIL import MoMIL
+        model = MoMIL(in_dim = args.in_dim, n_classes=args.n_classes, dropout=args.drop_out, act='relu', layer = args.layer_number)
     else:
         raise NotImplementedError(f'{args.model_type} is not implemented ...')
 
@@ -166,6 +181,7 @@ def train(datasets, cur, args):
     print('\nSetup EarlyStopping...', end=' ')
     if args.early_stopping:
         early_stopping = EarlyStopping(patience = 20, stop_epoch=50, verbose = True)
+        # early_stopping = EarlyStopping(patience = 1, stop_epoch=1, verbose = True)
 
     else:
         early_stopping = None
@@ -186,10 +202,10 @@ def train(datasets, cur, args):
     else:
         torch.save(model.state_dict(), os.path.join(args.results_dir, "s_{}_checkpoint.pt".format(cur)))
 
-    _, val_error, val_auc, _= summary(model, val_loader, args.n_classes)
+    _, val_error, val_auc, _, _, _, _= summary(model, val_loader, args.n_classes)
     print('Val error: {:.4f}, ROC AUC: {:.4f}'.format(val_error, val_auc))
 
-    results_dict, test_error, test_auc, acc_logger = summary(model, test_loader, args.n_classes)
+    results_dict, test_error, test_auc, acc_logger, f1, sensitivity, specificity = summary(model, test_loader, args.n_classes)
     print('Test error: {:.4f}, ROC AUC: {:.4f}'.format(test_error, test_auc))
 
     for i in range(args.n_classes):
@@ -205,7 +221,7 @@ def train(datasets, cur, args):
         writer.add_scalar('final/test_error', test_error, 0)
         writer.add_scalar('final/test_auc', test_auc, 0)
         writer.close()
-    return results_dict, test_auc, val_auc, 1-test_error, 1-val_error 
+    return results_dict, test_auc, val_auc, 1-test_error, 1-val_error, f1, sensitivity, specificity
 
 
 
@@ -225,7 +241,7 @@ def train_loop(epoch, model, loader, optimizer, n_classes, writer = None, loss_f
         acc_logger.log(Y_hat, label)
         loss = loss_fn(logits, label)
         loss_value = loss.item()
-        
+        # print('loss_value:', loss_value)
         train_loss += loss_value
         if (batch_idx + 1) % 20 == 0:
             print('batch {}, loss: {:.4f}, label: {}, bag_size: {}'.format(batch_idx, loss_value, label.item(), data.size(0)))
@@ -351,7 +367,7 @@ def summary(model, loader, n_classes):
         error = calculate_error(Y_hat, label)
         test_error += error
 
-        all_Y_hat.append(Y_hat.cpu().numpy())
+        all_Y_hat.append(Y_hat[0].cpu().numpy())
         all_label.append(label.cpu().numpy())
 
     test_error /= len(loader)
@@ -373,5 +389,10 @@ def summary(model, loader, n_classes):
 
         auc = np.nanmean(np.array(aucs))
 
-
-    return patient_results, test_error, auc, acc_logger
+    f1 = calculate_f1(all_Y_hat, all_label)
+    sensitivity, specificity = macro_avg_sensitivity_specificity(all_Y_hat, all_label)
+    # print(calculate_acc(all_Y_hat, all_label))
+    # print(test_error)
+    # print('all_Y_hat:', all_Y_hat)
+    # print('all_label:', all_label)
+    return patient_results, test_error, auc, acc_logger, f1, sensitivity, specificity
