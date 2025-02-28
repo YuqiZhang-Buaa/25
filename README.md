@@ -1,8 +1,12 @@
 # A Scalable Multiple Instance Learning Framework for Computational Pathology
 Continuous updating.
-## Datasets
+## A. Additional Method Detail
+### Figure 1. A lightweight feature fusion block.
+<img src="fig/1.png" alt="A lightweight feature fusion block." style="height: 300px;">
+
+## B. Dataset Descript
 The information of all datasets is shown in Table 1, and each dataset contains WSIs of different sizes.
-### Table 1
+### Table 1. Details of all datasets.
 || BRACS |TCGA-NSCLC |CAMELYON-16|
 | --- | --- | --- | --- |
 |Sample|  537|1053  |  395 |
