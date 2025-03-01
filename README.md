@@ -26,7 +26,7 @@ CAMELYON-16 is a WSI dataset for the diagnosis of breast cancer metastasis. A to
 TCGA-LUAD derived from the TCGA, is a WSI dataset for cancer survival prediction. It included 541 cases of LUAD WSIs, and survival time and censoring indicator corresponding to each WSI.
 #### 2. TCGA-LUSC
 TCGA-LUSC derived from the TCGA, is a WSI dataset for cancer survival prediction. It included 512 cases of LUSC WSIs, and survival time and censoring indicator corresponding to each WSI.
-## C. Cancer diagnosis results of CAMELYON-16
+## C. Cancer Diagnosis Results of CAMELYON-16
 ### Table 2. Cancer diagnosis results of CAMELYON-16.
 | Method       | AUC          | ACC          | F1 Score     |
 |--------------|--------------|--------------|--------------|
@@ -34,11 +34,23 @@ TCGA-LUSC derived from the TCGA, is a WSI dataset for cancer survival prediction
 | Mean Pooling | 0.7437±0.037 | 0.7042±0.027 | 0.5604±0.045 |
 | ABMIL        | 0.8073±0.047 | 0.7564±0.052 | 0.6624±0.063 |
 | CLAM         | 0.8097±0.045 | 0.7470±0.027 | 0.6592±0.054 |
-| TransMIL     | <u>0.8159±0.092<u> | 0.7631±0.062 | 0.6641±0.125 |
+| TransMIL     | 0.8159±0.092 | 0.7631±0.062 | 0.6641±0.125 |
 | S4MIL        | 0.8053±0.069 | 0.7511±0.050 | 0.6467±0.095 |
 | MambaMIL     | 0.7309±0.111 | 0.6923±0.151 | 0.5834±0.136 |
 | RRTMIL       | 0.8104±0.047 | 0.7621±0.044 | 0.6635±0.045 |
-| LongMIL      | 0.7562±0.106 | 0.4105±0.126 | 0.3168±0.185 |
+| LongMIL      | 0.8080±0.039 | 0.7578±0.067 | 0.6565±0.098 |
 | Our Model    | **0.8196±0.038** | **0.7668±0.024** | **0.6703±0.041** |
 
+Table 2 presents the cancer diagnosis performance of various MIL methods on the CAMELYON-16 dataset. The results indicate that our proposed MoMIL outperforms all other methods across all evaluation metrics. Specifically, MoMIL surpasses the second-best method by 0.0037, 0.0047, and 0.0068 in terms of AUC, ACC, and F1 score, respectively.
+## D. Results of feature fusion block using different activation functions.
+### Table 3. Comparative experiments of feature fusion block on the TCGA-NSCLC dataset.
+| Method                  | AUC          | ACC          | F1 Score     |
+|-------------------------|--------------|--------------|--------------|
+| w/o activation function | 0.9218±0.036 | 0.8534±0.039 | 0.8451±0.039 |
+| ELU                     | 0.9265±0.027 | 0.8517±0.042 | 0.8472±0.041 |
+| GELU                    | 0.9298±0.039 | 0.8572±0.056 | 0.8517±0.060 |
+| ReLU                    | 0.9248±0.042 | 0.8606±0.049 | 0.8534±0.056 |
+| SiLU                    | 0.9265±0.038 | 0.8672±0.044 | **0.8611±0.049** |
+| Tanh                    | 0.9359±0.027 | 0.8613±0.042 | 0.8560±0.039 |
+| Our Model(Sigmod)       | **0.9461±0.023** | **0.8684±0.040** | 0.8585±0.047 |
 
