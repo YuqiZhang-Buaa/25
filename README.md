@@ -1,9 +1,10 @@
 # A Scalable Multiple Instance Learning Framework for Computational Pathology
 Continuous updating.
 
-The following section provides additional details on MoMIL:
+The following sections provide additional details on MoMIL:
 * [A. Additional Method Detail](#a-additional-method-detail)
 * [B. Datasets Descript](#b-datasets-descript)
+* [C. Additional Experiments Detail](#c-additional-experiments-detail)
 
 ## A. Additional Method Detail
 ### Figure 1. A lightweight feature fusion block.
@@ -57,7 +58,13 @@ Table 2 presents the cancer diagnosis performance of various MIL methods on the 
 | ELU                     | 0.9265±0.027 | 0.8517±0.042 | 0.8472±0.041 |
 | GELU                    | 0.9298±0.039 | 0.8572±0.056 | 0.8517±0.060 |
 | ReLU                    | 0.9248±0.042 | 0.8606±0.049 | 0.8534±0.056 |
-| SiLU                    | 0.9265±0.038 | 0.8672±0.044 | **0.8611±0.049** |
+| SiLU                    | 0.9265±0.038 | 0.8672±0.044 | 0.8611±0.049 |
 | Tanh                    | 0.9359±0.027 | 0.8613±0.042 | 0.8560±0.039 |
+| Adaptive pool           | 0.9270±0.032 | 0.8614±0.039 | **0.8612±0.041** |
+| Simple attention        | 0.8896±0.034 | 0.7943±0.047 | 0.7660±0.057 |
+| Dynamic kernel          | 0.9323±0.026 | 0.8585±0.036 | 0.8461±0.038 |
+| Hybrid fusion           | 0.9380±0.038 | 0.8601±0.050 | 0.8597±0.059 |
 | Our Model(Sigmod)       | **0.9461±0.023** | **0.8684±0.040** | 0.8585±0.047 |
+
+Table 3 presents a comparative study of various fusion strategies to validate the advantages of our approach. The experiments systematically compared alternative activation functions and existing fusion methods, consistently demonstrating the superiority of our fusion strategy in CPath. Notably, the Sigmoid and Tanh activation functions significantly outperformed others, with an AUC of 0.9461 for Sigmoid and 0.9359 for Tanh. We attribute this success to the fact that symmetric nonlinear activations better preserve the interplay between positive and negative features in histopathological patterns. In contrast, activation functions such as ReLU tend to discard negative activations, compressing information into a unipolar range. Furthermore, compared to Tanh, the smaller output range of Sigmoid offers meaningful improvements in maintaining stable learning dynamics for WSI sequences. Adaptive pooling, simple attention, dynamic kernel, and hybrid fusion are commonly employed fusion architectures. To mitigate the computational overhead, we have streamlined these methods for suitability in WSI analysis. Notably, the hybrid fusion, which utilizes pointwise and depthwise separable convolutions, achieved the best performance among these four strategies. However, it still falls significantly short compared to our proposed fusion strategy. Experimental results indicate that, despite its simplicity, our fusion module delivers superior performance in integrating multi-order features. Detailed implementations of the various fusion methods are available on Github.
 
