@@ -12,7 +12,7 @@ The following sections provide additional details on MoMIL:
 
 ## B. Datasets Descript
 The details of all datasets are shown in Table 1. Each dataset contains WSIs of different sizes.
-### Table 1. Details of all datasets.
+#### Table 1. Details of all datasets.
 || BRACS |TCGA-NSCLC |CAMELYON-16|LUAD|LUSC|
 | --- | --- | --- | --- | --- | --- |
 |Sample| 537|1053 | 395 |541|512|
@@ -35,7 +35,7 @@ TCGA-LUSC derived from the TCGA, is a WSI dataset for cancer survival prediction
 
 ## C. Additional Experiments Detail
 ### C.1. Cancer Diagnosis Results of CAMELYON-16
-### Table 2. Cancer diagnosis results of CAMELYON-16.
+#### Table 2. Cancer diagnosis results of CAMELYON-16.
 | Method       | AUC          | ACC          | F1 Score     |
 |--------------|--------------|--------------|--------------|
 | Max Pooling  | 0.7748±0.103 | 0.7375±0.103 | 0.6450±0.104 |
@@ -51,7 +51,7 @@ TCGA-LUSC derived from the TCGA, is a WSI dataset for cancer survival prediction
 
 Table 2 presents the cancer diagnosis performance of various MIL methods on the CAMELYON-16 dataset. The results indicate that our proposed MoMIL outperforms all other methods across all evaluation metrics. Specifically, MoMIL surpasses the second-best method by 0.0037, 0.0047, and 0.0068 in terms of AUC, ACC, and F1 score, respectively.
 ### C.2. Results of feature fusion block using different activation functions.
-### Table 3. Comparative experiments of feature fusion block on the TCGA-NSCLC dataset.
+#### Table 3. Comparative experiments of feature fusion block on the TCGA-NSCLC dataset.
 | Method                  | AUC          | ACC          | F1 Score     |
 |-------------------------|--------------|--------------|--------------|
 | w/o activation function | 0.9218±0.036 | 0.8534±0.039 | 0.8451±0.039 |
