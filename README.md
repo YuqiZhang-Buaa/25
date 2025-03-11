@@ -1,13 +1,15 @@
 # A Scalable Multiple Instance Learning Framework for Computational Pathology
 Continuous updating.
 
-[Additional Method Detail](## A. Additional Method Detail)
+The following section provides additional details on MoMIL:
+* [A. Additional Method Detail](#a-additional-method-detail)
+* [B. Datasets Descript](#b-datasets-descript)
 
 ## A. Additional Method Detail
 ### Figure 1. A lightweight feature fusion block.
 <img src="fig/1.png" alt="A lightweight feature fusion block." style="height: 300px;">
 
-## B. Dataset Descript
+## B. Datasets Descript
 The details of all datasets are shown in Table 1. Each dataset contains WSIs of different sizes.
 ### Table 1. Details of all datasets.
 || BRACS |TCGA-NSCLC |CAMELYON-16|LUAD|LUSC|
@@ -29,7 +31,9 @@ CAMELYON-16 is a WSI dataset for the diagnosis of breast cancer metastasis. A to
 TCGA-LUAD derived from the TCGA, is a WSI dataset for cancer survival prediction. It included 541 cases of LUAD WSIs, and survival time and censoring indicator corresponding to each WSI.
 #### 2. TCGA-LUSC
 TCGA-LUSC derived from the TCGA, is a WSI dataset for cancer survival prediction. It included 512 cases of LUSC WSIs, and survival time and censoring indicator corresponding to each WSI.
-## C. Cancer Diagnosis Results of CAMELYON-16
+
+## C. Additional Experiments Detail
+### C.1. Cancer Diagnosis Results of CAMELYON-16
 ### Table 2. Cancer diagnosis results of CAMELYON-16.
 | Method       | AUC          | ACC          | F1 Score     |
 |--------------|--------------|--------------|--------------|
@@ -45,7 +49,7 @@ TCGA-LUSC derived from the TCGA, is a WSI dataset for cancer survival prediction
 | Our Model    | **0.8196±0.038** | **0.7668±0.024** | **0.6703±0.041** |
 
 Table 2 presents the cancer diagnosis performance of various MIL methods on the CAMELYON-16 dataset. The results indicate that our proposed MoMIL outperforms all other methods across all evaluation metrics. Specifically, MoMIL surpasses the second-best method by 0.0037, 0.0047, and 0.0068 in terms of AUC, ACC, and F1 score, respectively.
-## D. Results of feature fusion block using different activation functions.
+### C.2. Results of feature fusion block using different activation functions.
 ### Table 3. Comparative experiments of feature fusion block on the TCGA-NSCLC dataset.
 | Method                  | AUC          | ACC          | F1 Score     |
 |-------------------------|--------------|--------------|--------------|
