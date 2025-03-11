@@ -7,7 +7,7 @@ The following sections provide additional details on MoMIL:
 * [C. Additional Experiments Detail](#c-additional-experiments-detail)
 
 ## A. Additional Method Detail
-### Figure 1. A lightweight feature fusion block.
+#### Figure 1. A lightweight feature fusion block.
 <img src="fig/1.png" alt="A lightweight feature fusion block." style="height: 300px;">
 
 ## B. Datasets Descript
@@ -67,6 +67,10 @@ Table 2 presents the cancer diagnosis performance of various MIL methods on the 
 | Our Model(Sigmod)       | **0.9461±0.023** | **0.8684±0.040** | 0.8585±0.047 |
 
 Table 3 presents a comparative study of various fusion strategies to validate the advantages of our approach. The experiments systematically compared alternative activation functions and existing fusion methods, consistently demonstrating the superiority of our fusion strategy in CPath. Notably, the Sigmoid and Tanh activation functions significantly outperformed others, with an AUC of 0.9461 for Sigmoid and 0.9359 for Tanh. We attribute this success to the fact that symmetric nonlinear activations better preserve the interplay between positive and negative features in histopathological patterns. In contrast, activation functions such as ReLU tend to discard negative activations, compressing information into a unipolar range. Furthermore, compared to Tanh, the smaller output range of Sigmoid offers meaningful improvements in maintaining stable learning dynamics for WSI sequences. Adaptive pooling, simple attention, dynamic kernel, and hybrid fusion are commonly employed fusion architectures. To mitigate the computational overhead, we have streamlined these methods for suitability in WSI analysis. Notably, the hybrid fusion, which utilizes pointwise and depthwise separable convolutions, achieved the best performance among these four strategies. However, it still falls significantly short compared to our proposed fusion strategy. Experimental results indicate that, despite its simplicity, our fusion module delivers superior performance in integrating multi-order features. Detailed implementations of the various fusion methods are available on [Fusion](fusion/).
-
 ### C.3. Visualization.
+#### Figure 2. The tSNE visualization of features on the TCGA-NSCLC dataset.
+<img src="fig/tsne.png" alt="A lightweight feature fusion block." style="height: 300px;">
 
+As shown in Figure 2, the t-SNE visualization results in our experiments demonstrate that the proposed model achieves superior separability between LUAD and LUSC slides compared to both $R^2$ TMIL and MambaMIL frameworks. Specifically, the distinct cluster boundaries observed in our visualization indicate enhanced discriminative capability in feature representation learning, with substantially fewer misclassified samples at the interface regions. This improved topological organization in the latent space suggests that our architecture better preserves pathological discriminative features during slide-level aggregation.
+Notably, when compared with another SSM-based approach, MambaMIL, our model exhibits significant qualitative improvements in inter-class separation distance and intra-class compactness. This performance gap highlights the effectiveness of our novel structural modifications in addressing the feature homogenization issue commonly observed in sequential state space modeling. The reduced misclassification rate further implies stronger robustness against histological ambiguities and staining variations, which is particularly crucial for clinical diagnostic applications where precise cancer sub-typing differentiation directly impacts therapeutic decision-making.
+These visualization outcomes validate that our method advances beyond existing MIL frameworks in capturing pathologically relevant morphological patterns while maintaining discriminative power across heterogeneous WSI data.
