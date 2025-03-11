@@ -1,5 +1,8 @@
 # A Scalable Multiple Instance Learning Framework for Computational Pathology
 Continuous updating.
+
+[Additional Method Detail](## A. Additional Method Detail)
+
 ## A. Additional Method Detail
 ### Figure 1. A lightweight feature fusion block.
 <img src="fig/1.png" alt="A lightweight feature fusion block." style="height: 300px;">
